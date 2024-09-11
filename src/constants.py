@@ -27,6 +27,11 @@ ARCHIVE_SPLIT = -1
 TOTAL_COUNT = 0
 PATTERN_PYTHON = r'Python (?P<version>\d\.\d+) \((?P<status>.*)\)'
 PATTERN_PDF = r'.+pdf-a4\.zip$'
+CHOICE_PRETTY = 'pretty'
+CHOICE_FILE = 'file'
+LOG_DIR = 'logs'
+DOWNLOAD_DIR = 'downloads'
+RESULTS_DIR = 'results'
 
 
 class Tags:
