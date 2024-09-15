@@ -32,6 +32,7 @@ CHOICE_FILE = 'file'
 LOG_DIR = 'logs'
 DOWNLOAD_DIR = 'downloads'
 RESULTS_DIR = 'results'
+ENCODING = 'utf-8'
 
 
 class Tags:

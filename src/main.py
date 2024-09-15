@@ -63,10 +63,9 @@ def latest_versions(session):
 def download(session):
     downloads_url = urljoin(MAIN_DOC_URL, 'download.html')
     soup = fetch_and_parse(session, downloads_url)
-    main_tag = find_tag(soup, Tags.DIV, {'role': 'main'})
-    table_tag = find_tag(main_tag, Tags.TABLE, {'class': 'docutils'})
-    pdf_a4_tag = find_tag(table_tag, Tags.A,
-                          {Tags.HREF: re.compile(PATTERN_PDF)})
+    pdf_a4_tag = find_tag(
+        soup, Tags.A, {Tags.HREF: re.compile(PATTERN_PDF)}
+    )
     pdf_a4_link = pdf_a4_tag[Tags.HREF]
     archive_url = urljoin(downloads_url, pdf_a4_link)
     filename = archive_url.split('/')[ARCHIVE_SPLIT]
@@ -83,7 +82,7 @@ def pep(session):
     pep_url = urljoin(MAIN_DOC_URL, PEP_PAGE)
     soup = fetch_and_parse(session, pep_url)
     section_tag = find_tag(soup, Tags.SECTION, attrs={'id': 'numerical-index'})
-    tbody_tag = find_tag(section_tag, Tags.TBODY)
+    tbody_tag = section_tag.find(Tags.TBODY)
     tr_tags = tbody_tag.find_all(Tags.TR)
     status_counts = {}
     total_count = TOTAL_COUNT
@@ -105,10 +104,8 @@ def pep(session):
                     status=', '.join(status)
                 )
             )
-        if status_pep in status_counts:
-            status_counts[status_pep] += STATUS_COUNTS
-        else:
-            status_counts[status_pep] = STATUS_COUNTS
+        status_counts.setdefault(status_pep, 0)
+        status_counts[status_pep] += STATUS_COUNTS
         total_count += STATUS_COUNTS
     status_counts['Total'] = total_count
     results = [('Status', 'Count')]
@@ -138,11 +135,7 @@ def main():
         results = MODE_TO_FUNCTION[parser_mode](session)
         if results is not None:
             control_output(results, args)
-    except ConnectionError as error:
-        logging.error(f'Ошибка соединения: {error}', stack_info=True)
-    except ParserFindTagException as error:
-        logging.error(f'Ошибка поиска тега: {error}', stack_info=True)
-    except Exception as error:
+    except (ConnectionError, ParserFindTagException, Exception) as error:
         logging.error(f'Ошибка в процессе парсинга: {error}', stack_info=True)
     logging.info('Парсер завершил работу.')
 

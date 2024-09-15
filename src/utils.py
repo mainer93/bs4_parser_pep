@@ -1,11 +1,11 @@
 from bs4 import BeautifulSoup
 from requests import RequestException
 
-from constants import Tags
+from constants import ENCODING, Tags
 from exceptions import ParserFindTagException
 
 
-def get_response(session, url, encoding='utf-8'):
+def get_response(session, url, encoding=ENCODING):
     try:
         response = session.get(url)
         response.encoding = encoding
